@@ -1,0 +1,106 @@
+UO_annuaire,type_uo,cod_ann
+Boucle du Mouhoun,DRS,1
+CHR Dédougou,CH,2
+DS Boromo,DS,3
+DS Dedougou,DS,4
+DS Nouna,DS,5
+DS Solenzo,DS,6
+DS Toma,DS,7
+DS Tougan,DS,8
+Cascades,DRS,9
+CHR Banfora,CH,10
+DS Banfora,DS,11
+DS Mangodara,DS,12
+DS Sindou,DS,13
+Centre,DRS,14
+CHU Bogodogo,CH,15
+CHU Pédiatrique CDG,CH,16
+CHU Tengandogo,CH,17
+CHU Yalgado,CH,18
+Hôpital Paul VI,CH,19
+Hôpital Saint Camille de Ouagadougou,CH,20
+Hôpital SCHIPHRA,CH,21
+DS Baskuy,DS,22
+DS Bogodogo,DS,23
+DS Boulmiougou,DS,24
+DS Nongr-Massom,DS,25
+DS Sig-Noghin,DS,26
+Centre Est,DRS,27
+CHR Tenkodogo,CH,28
+DS Bittou,DS,29
+DS Garango,DS,30
+DS Koupéla,DS,31
+DS Ouargaye,DS,32
+DS Pouytenga,DS,33
+DS Tenkodogo,DS,34
+DS Zabré,DS,35
+Centre Nord,DRS,36
+CHR Kaya,CH,37
+DS Barsalogho,DS,38
+DS Boulsa,DS,39
+DS Boussouma,DS,40
+DS Kaya,DS,41
+DS Kongoussi,DS,42
+DS Tougouri,DS,43
+Centre Ouest,DRS,44
+CHR Koudougou,CH,45
+DS Koudougou,DS,46
+DS Léo,DS,47
+DS Nanoro,DS,48
+DS Réo,DS,49
+DS Sabou,DS,50
+DS Sapouy,DS,51
+DS Tenado,DS,52
+Centre Sud,DRS,53
+CHR Manga,CH,54
+DS Kombissiri,DS,55
+DS Manga,DS,56
+DS Po,DS,57
+DS Sapone,DS,58
+Est,DRS,59
+CHR Fada N'Gourma,CH,60
+DS Bogande,DS,61
+DS Diapaga,DS,62
+DS Fada,DS,63
+DS Gayeri,DS,64
+DS Manni,DS,65
+DS Pama,DS,66
+Hauts Bassins,DRS,67
+CHU Sanou Souro,CH,68
+DS Dafra,DS,69
+DS Dande,DS,70
+DS Do,DS,71
+DS Hounde,DS,72
+DS Karangasso Vigue,DS,73
+DS Léna,DS,74
+DS N'Dorola,DS,75
+DS Orodara,DS,76
+Nord,DRS,77
+CHUR Ouahigouya,CH,78
+DS Gourcy,DS,79
+DS Ouahigouya,DS,80
+DS Séguénéga,DS,81
+DS Thiou,DS,82
+DS Titao,DS,83
+DS Yako,DS,84
+Plateau Central,DRS,85
+CHR Ziniaré,CH,86
+DS Boussé,DS,87
+DS Ziniaré,DS,88
+DS Zorgho,DS,89
+Sahel,DRS,90
+CHR Dori,CH,91
+DS Djibo,DS,92
+DS Dori,DS,93
+DS Gorom-Gorom,DS,94
+DS Sebba,DS,95
+Sud Ouest,DRS,96
+CHR Gaoua,CH,97
+DS Batié,DS,98
+DS Dano,DS,99
+DS Diébougou,DS,100
+DS Gaoua,DS,101
+DS Kampti,DS,102
+Total District,Total_ds,103
+Total Hôpital,Total_ch,104
+Burkina Faso,Total_bfa,105
