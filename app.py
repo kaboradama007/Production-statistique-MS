@@ -27,8 +27,9 @@ st.title("📘 ANNUAIRE STATISTIQUE MS")
 # ----------------------------------------------------------------------------------------------
 #utilisateur="annuaire"
 #passe="Annuaire@25"
-#utilisateur = st.text_input("Username de Endos-BF", type="default")
-#passe = st.text_input("Mot de passe de Endos-BF", type="password")
+utilisateur = st.text_input("Username de Endos-BF", type="default")
+passe = st.text_input("Mot de passe de Endos-BF", type="password")
+url_base = "https://endos.minsante.bf/api"
 annee_annuaire = st.text_input("Annuaire de l'année de :", "2024")
 trimestres=annee_annuaire+"Q4"
 
@@ -59,7 +60,7 @@ code_nosologie_hospitalisation=pd.read_excel("code_nosologie_annuaire.xlsx",head
 # ----------------------------------------------------------------------------------------------
 # FONCTION D'EXTRACTION ENDOS BF
 # ----------------------------------------------------------------------------------------------
-def extractionendos_dhis(annee_annuaire, niveau, listesindicateurs, nom_extraction=""):
+def extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire, niveau, listesindicateurs, nom_extraction=""):
     
     # --- Vérifier les indicateurs ---
     if not listesindicateurs:
@@ -68,9 +69,9 @@ def extractionendos_dhis(annee_annuaire, niveau, listesindicateurs, nom_extracti
 
     # --- Récupérer les secrets DHIS2 ---
     try:
-        utilisateur = st.secrets["dhis2"]["utilisateur"]
-        passe = st.secrets["dhis2"]["passe"]
-        base_url_api = st.secrets["dhis2"]["url_base"]
+        utilisateur = utilisateur
+        passe = passe
+        base_url_api = url_base
     except Exception as e:
         st.error("❌ Secrets DHIS2 non trouvés. Veuillez créer un secrets.toml valide.")
         return None
@@ -248,12 +249,12 @@ def traitement_donnees_ds(df_donnees,code_rangement_annuaire,correspondanceUID):
 #FONCTION D'EXTRACTION DES UNITES D'ORGANISATION
 #----------------------------------------------------------------------------------------------------
 
-def extraction_UO():
+def extraction_UO(utilisateur, passe, url_base):
     # 🔒 Étape 1 : Charger les identifiants depuis secrets.toml ou entrée manuelle
     if "dhis2" in st.secrets:
-        utilisateur = st.secrets["dhis2"]["utilisateur"]
-        passe = st.secrets["dhis2"]["passe"]
-        url_base = st.secrets["dhis2"]["url_base"]
+        utilisateur = utilisateur
+        passe = passe
+        url_base = url_base
         st.info("🔐 Identifiants DHIS2 chargés depuis secrets.toml")
     else:
         st.warning("⚠️ Aucun fichier secrets.toml détecté. Veuillez saisir vos identifiants manuellement.")
@@ -334,10 +335,10 @@ def ajout_variables_nulle(df, colonnes):
 #FONCTION D'EXTRACTION DES GROUPES UNITES D'ORGANISATION
 #----------------------------------------------------------------------------------------------------
 
-def extraction_groupe_uo(df_uo):
+def extraction_groupe_uo(utilisateur, passe, df_uo):
     # --- Identifiants DHIS2 depuis secrets.toml ---
-    utilisateur = st.secrets["dhis2"]["utilisateur"]
-    passe = st.secrets["dhis2"]["passe"]
+    utilisateur = utilisateur
+    passe = passe
 
     # --- URL et paramètres ---
     url = "https://endos.minsante.bf/api/organisationUnitGroups.json"
@@ -495,11 +496,11 @@ if st.button("🚀 Lancer la génération du fichier Annuaire"):
         st.info("⏳ Génération du fichier en cours...")
 
         # 1️ Extraction des UO et correspondances CHR/CHU
-        df_uo, uo_correspondance_unitech = extraction_UO()
+        df_uo, uo_correspondance_unitech = extraction_UO(utilisateur, passe, url_base)
         st.success("✅ Unités d'organisation extraites")
 
         # 2️ Extraction des groupes UO
-        df_type, df_groupe_statut = extraction_groupe_uo(df_uo)
+        df_type, df_groupe_statut = extraction_groupe_uo(utilisateur, passe,df_uo)
         st.success("✅ Groupes d'UO extraits")
 
         # 3️ Extraction des officines
@@ -507,7 +508,7 @@ if st.button("🚀 Lancer la génération du fichier Annuaire"):
         listind0_officines = Listes_indicateurs_annuaire_stat[
             Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind0_officines"
         ]['Uid_endosBF'].dropna().unique().tolist()
-        df_officines_extract = extractionendos_dhis(trimestres, 4, listind0_officines)
+        df_officines_extract = extractionendos_dhis(utilisateur, passe, url_base,trimestres, 4, listind0_officines)
         st.success("✅ Officines extraites")
 
         # 4️ Complétude districts
@@ -515,7 +516,7 @@ if st.button("🚀 Lancer la génération du fichier Annuaire"):
         listind0_completude_ds = Listes_indicateurs_annuaire_stat[
             Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind0_completude_ds"
         ]['Uid_endosBF'].dropna().unique().tolist()
-        ds_completude = extractionendos_dhis(annee_annuaire, 6, listind0_completude_ds)
+        ds_completude = extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire, 6, listind0_completude_ds)
         ds_completude["type_report"] = ds_completude["dataname"].apply(lambda x: x.split(" - ")[-1].strip())
         st.success("✅ Complétude districts extraite")
 
@@ -524,92 +525,92 @@ if st.button("🚀 Lancer la génération du fichier Annuaire"):
         listind0_completude_ch = Listes_indicateurs_annuaire_stat[
             Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind0_completude_ch"
         ]['Uid_endosBF'].dropna().unique().tolist()
-        dfcompletude = extractionendos_dhis(annee_annuaire, 4, listind0_completude_ch)
+        dfcompletude = extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire, 4, listind0_completude_ch)
         dfcompletude["type_report"] = dfcompletude["dataname"].apply(lambda x: x.split(" - ")[-1].strip())
         st.success("✅ Complétude CHR/CHU extraite")
         
         #6-------------- Données par districts et unités des centres hospitaliers par an-------------------------------------
         st.info("📊 Données par districts et unités des centres hospitaliers par an")
         listind1_niveau4_an=Listes_indicateurs_annuaire_stat[Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind1_niveau4_an"]['Uid_endosBF'].dropna().unique().tolist()
-        df_data_level4=extractionendos_dhis(annee_annuaire,4,listind1_niveau4_an)
+        df_data_level4=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,4,listind1_niveau4_an)
         data=df_data_level4.copy()
         st.success("✅ Données par districts et unités des centres hospitaliers par an")
         
         #7-----------------------Population et populations cibles----------------------------------------------
         st.info("📊 Population et populations cibles")
         listind2_population=Listes_indicateurs_annuaire_stat[Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind2_population"]['Uid_endosBF'].dropna().unique().tolist()
-        df_population=extractionendos_dhis(annee_annuaire,4,listind2_population)
+        df_population=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,4,listind2_population)
         st.success("✅ Population et populations cibles")
         
 
         #8------------------------DRD et rupture dans les DRD par région----------------------------------------
         st.info("📊 DRD et rupture dans les DRD par région")
         listind3_drd=Listes_indicateurs_annuaire_stat[Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind3_drd"]['Uid_endosBF'].dropna().unique().tolist()
-        df_drd_extract=extractionendos_dhis(trimestres,2,listind3_drd)
+        df_drd_extract=extractionendos_dhis(utilisateur, passe, url_base,trimestres,2,listind3_drd)
         st.success("✅ DRD et rupture dans les DRD par région")
 
         #9-----------------------indicateurs Q4 (DMEG, Lepre, VIH, normes en personnel)-------------------------
         st.info("📊 indicateurs Q4 (DMEG, Lepre, VIH, normes en personnel)")
         listind4_q4_dmeg_vih=Listes_indicateurs_annuaire_stat[Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind4_q4_dmeg_vih"]['Uid_endosBF'].dropna().unique().tolist()
-        df_indicateurs_q4_extract=extractionendos_dhis(trimestres,4,listind4_q4_dmeg_vih)
+        df_indicateurs_q4_extract=extractionendos_dhis(utilisateur, passe, url_base,trimestres,4,listind4_q4_dmeg_vih)
         st.success("✅ indicateurs Q4 (DMEG, Lepre, VIH, normes en personnel)")
 
         #510--------Indicateurs annuels (Vaccin anti palu (VAP) et causes de décès maternel par cause)-------------
         st.info("📊 Indicateurs annuels (Vaccin anti palu (VAP)")
         listind5_vap_deces_mat=Listes_indicateurs_annuaire_stat[Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind5_vap_deces_mat"]['Uid_endosBF'].dropna().unique().tolist()
-        vap_deces_mat_extract=extractionendos_dhis(annee_annuaire,4,listind5_vap_deces_mat)
+        vap_deces_mat_extract=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,4,listind5_vap_deces_mat)
         st.success("✅ Indicateurs annuels (Vaccin anti palu (VAP)")
 
         #11------------- indicateurs semestriels (JVA): donnees de campagne----------------------------------------
         st.info("📊 indicateurs semestriels (JVA)")
         semestres=f"{annee_annuaire}Q1;{annee_annuaire}Q2;{annee_annuaire}Q3;{annee_annuaire}Q4"
         listind6_jva=Listes_indicateurs_annuaire_stat[Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind6_jva"]['Uid_endosBF'].dropna().unique().tolist()
-        df_jva_extract=extractionendos_dhis(semestres,4,listind6_jva)
+        df_jva_extract=extractionendos_dhis(utilisateur, passe, url_base,semestres,4,listind6_jva)
         st.success("✅ indicateurs semestriels (JVA)")
 
         #12-------------CONSULTANT, REFERENCE----------------------------------------------------------------------
         st.info("📊 CONSULTANT, REFERENCE")
         listind7_consult_ref_fs=Listes_indicateurs_annuaire_stat[Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind7_consult_ref_fs"]['Uid_endosBF'].dropna().unique().tolist()
         #Pour les FS de niveau 6: type et statut (Consultant, PCIME, evacuation, reference, sortie)
-        df_consult_ref_fs_extract=extractionendos_dhis(annee_annuaire,6,listind7_consult_ref_fs)
+        df_consult_ref_fs_extract=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,6,listind7_consult_ref_fs)
         #pour les unites des hopitaux
-        df_consult_ref_ch_extract=extractionendos_dhis(annee_annuaire,4,listind7_consult_ref_fs)
+        df_consult_ref_ch_extract=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,4,listind7_consult_ref_fs)
         st.success("✅ CONSULTANT, REFERENCE")
 
         #13------------------Lits Q4 (lits des CMA et centres hospitaliers)---------------------------------------
         st.info("📊 Lits Q4 (lits des CMA et centres hospitaliers)")
         listind8_lits_cma_ch=Listes_indicateurs_annuaire_stat[Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind8_lits_cma_ch"]['Uid_endosBF'].dropna().unique().tolist()
         # FS niveau 6
-        df_lits_fs_extract=extractionendos_dhis(trimestres,6,listind8_lits_cma_ch)
+        df_lits_fs_extract=extractionendos_dhis(utilisateur, passe, url_base,trimestres,6,listind8_lits_cma_ch)
         # Unité des hopitaux
-        df_lits_ch_extract=extractionendos_dhis(trimestres,4,listind8_lits_cma_ch)
+        df_lits_ch_extract=extractionendos_dhis(utilisateur, passe, url_base,trimestres,4,listind8_lits_cma_ch)
         st.success("✅ Lits Q4 (lits des CMA et centres hospitaliers)")
 
         #14-------------------------------WHOPEN, MPR, Integration des services-------------------------------------
         st.info("📊 WHOPEN, MPR, Integration des services")
         listind9_whopen_mpr_int=Listes_indicateurs_annuaire_stat[Listes_indicateurs_annuaire_stat['listes_indicateurs']=="listind9_whopen_mpr_int"]['Uid_endosBF'].dropna().unique().tolist()
         #pour les indicateurs additionnels niveau FS
-        indicateurs_additionnels_extract_fs=extractionendos_dhis(annee_annuaire,6,listind9_whopen_mpr_int)
+        indicateurs_additionnels_extract_fs=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,6,listind9_whopen_mpr_int)
         #pour les indicateurs additionnels niveau CH
-        indicateurs_additionnels_extract_ch=extractionendos_dhis(annee_annuaire,4,listind9_whopen_mpr_int)
+        indicateurs_additionnels_extract_ch=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,4,listind9_whopen_mpr_int)
         st.success("✅ WHOPEN, MPR, Integration des services")
 
         #15--------Indicateurs personnes agees-------------
         st.info("📊 Indicateurs personnes agees")
         listind10_personnes_agees=Listes_personnes_agees_annuaire['dataid'].dropna().unique().tolist()
-        personnes_agees_extract=extractionendos_dhis(annee_annuaire,2,listind10_personnes_agees)
+        personnes_agees_extract=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,2,listind10_personnes_agees)
         st.success("✅ Indicateurs personnes agees")
 
         #16--------Indicateurs nosologie_consultation-------------
         st.info("📊 Indicateurs nosologie_consultation")
         liste_nosologie_consultation=indicateurs_nosologies[indicateurs_nosologies['type']=="noso_consultation"]['uid'].dropna().unique().tolist()
-        df_nosologie_extract=extractionendos_dhis(annee_annuaire,2,liste_nosologie_consultation)
+        df_nosologie_extract=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,2,liste_nosologie_consultation)
         st.success("✅ Indicateurs nosologie_consultation")
 
         #17--------Indicateurs noso_hospitalisation-------------
         st.info("📊 Indicateurs noso_hospitalisation")
         liste_noso_hospitalisation=indicateurs_noso_hospitalisation["uid"].dropna().unique().tolist()
-        df_noso_hospitalisation=extractionendos_dhis(annee_annuaire,2,liste_noso_hospitalisation) #40mn
+        df_noso_hospitalisation=extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire,2,liste_noso_hospitalisation) #40mn
         st.success("✅ Indicateurs noso_hospitalisation")
         
 
