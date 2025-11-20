@@ -34,26 +34,26 @@ trimestres=annee_annuaire+"Q4"
 
 # CHARGEMENT DES FICHIERS DE DEPENDANCES
 #----------------------------------------------------------------------------------------
-adresse="dependances"
-Listes_indicateurs_annuaire_stat=pd.read_excel(adresse+"\Listes_indicateurs_annuaire_stat.xlsx",header=0,sheet_name="indicateurs")
-Listes_personnes_agees_annuaire=pd.read_excel(adresse+"\Listes_indicateurs_annuaire_stat.xlsx",header=0,sheet_name="personnes_agees")
-correspondanceUID=pd.read_excel(adresse+"\CorrespondanceUID_Indicateur_DE.xlsx",header=0)
+#adresse="dependances"
+Listes_indicateurs_annuaire_stat=pd.read_excel("Listes_indicateurs_annuaire_stat.xlsx",header=0,sheet_name="indicateurs")
+Listes_personnes_agees_annuaire=pd.read_excel("Listes_indicateurs_annuaire_stat.xlsx",header=0,sheet_name="personnes_agees")
+correspondanceUID=pd.read_excel("CorrespondanceUID_Indicateur_DE.xlsx",header=0)
 # code de rangement annuaire DS ET CH
-code_annuaire_global=pd.read_excel(adresse+"\Code_annuaireDS_CH.xlsx",header=0, sheet_name="nouvelle")
+code_annuaire_global=pd.read_excel("Code_annuaireDS_CH.xlsx",header=0, sheet_name="nouvelle")
 code_annuaire_ch = pd.DataFrame(code_annuaire_global, columns=["UO_annuaire", "type_uo", "cod_ann"])
 code_annuaire_ds=code_annuaire_ch[code_annuaire_ch["type_uo"].isin (["DRS","DS","Total_bfa"])]
 # Ordre de rangement des centres hospitaliers
-code_ch_annuaire=pd.read_excel(adresse+"\Code_annuaireDS_CH.xlsx",header=0, sheet_name="CH")
+code_ch_annuaire=pd.read_excel("Code_annuaireDS_CH.xlsx",header=0, sheet_name="CH")
 # Ordre de présentations des actes de chirurgie dans les centres hospitaliers
-chirurgie_ch=pd.read_excel(adresse+"\Chirurgie_ch.xlsx",header=0)
+chirurgie_ch=pd.read_excel("Chirurgie_ch.xlsx",header=0)
 # Correspondance de chaque CH avec son distrit d'implantation
-ds_implantation_CH=pd.read_excel(adresse+"\district_d_implantation CH.xlsx",header=0)
+ds_implantation_CH=pd.read_excel("district_d_implantation CH.xlsx",header=0)
 # nosologie de onsultation et d'hospitalisation, liste indicateurs
-indicateurs_nosologies=pd.read_excel(adresse+"\liste_indicateurs_nosologies.xlsx",header=0)
-indicateurs_noso_hospitalisation=pd.read_excel(adresse+"\Liste_nosologies_hospitalisations.xlsx",header=0)
+indicateurs_nosologies=pd.read_excel("liste_indicateurs_nosologies.xlsx",header=0)
+indicateurs_noso_hospitalisation=pd.read_excel("Liste_nosologies_hospitalisations.xlsx",header=0)
 # code de rangement nosologie de consultation
-code_nosologie_consultation=pd.read_excel(adresse+"\code_nosologie_annuaire.xlsx",header=0)
-code_nosologie_hospitalisation=pd.read_excel(adresse+"\code_nosologie_annuaire.xlsx",header=0, sheet_name="noso_hospitalisation")
+code_nosologie_consultation=pd.read_excel("code_nosologie_annuaire.xlsx",header=0)
+code_nosologie_hospitalisation=pd.read_excel("code_nosologie_annuaire.xlsx",header=0, sheet_name="noso_hospitalisation")
 
 
 # ----------------------------------------------------------------------------------------------
