@@ -67,14 +67,9 @@ def extractionendos_dhis(utilisateur, passe, url_base,annee_annuaire, niveau, li
         st.warning(f"⚠️ Aucun indicateur pour : {nom_extraction}")
         return None
 
-    # --- Récupérer les secrets DHIS2 ---
-    try:
-        utilisateur = utilisateur
-        passe = passe
-        base_url_api = url_base
-    except Exception as e:
-        st.error("❌ Secrets DHIS2 non trouvés. Veuillez créer un secrets.toml valide.")
-        return None
+    utilisateur = utilisateur
+    passe = passe
+    base_url_api = url_base
 
     # --- Conteneurs Streamlit ---
     with st.expander(f"📊 {nom_extraction} ({len(listesindicateurs)} indicateurs)", expanded=False):
@@ -251,21 +246,11 @@ def traitement_donnees_ds(df_donnees,code_rangement_annuaire,correspondanceUID):
 
 def extraction_UO(utilisateur, passe, url_base):
     # 🔒 Étape 1 : Charger les identifiants depuis secrets.toml ou entrée manuelle
-    if "dhis2" in st.secrets:
-        utilisateur = utilisateur
-        passe = passe
-        url_base = url_base
-        st.info("🔐 Identifiants DHIS2 chargés depuis secrets.toml")
-    else:
-        st.warning("⚠️ Aucun fichier secrets.toml détecté. Veuillez saisir vos identifiants manuellement.")
-        with st.form("login_form"):
-            utilisateur = st.text_input("Nom d'utilisateur DHIS2")
-            passe = st.text_input("Mot de passe DHIS2", type="password")
-            url_base = st.text_input("URL de base", value="https://endos.minsante.bf/api")
-            submitted = st.form_submit_button("Se connecter")
-        if not submitted:
-            st.stop()  # on attend la soumission du formulaire
 
+    utilisateur = utilisateur
+    passe = passe
+    url_base = url_base
+   
     # 🔗 Étape 2 : Appel à l’API DHIS2
     url = f"{url_base}/organisationUnits.json"
     params = {"paging": "false", "fields": "id,name,path,level"}
